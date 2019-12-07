@@ -1,0 +1,65 @@
+#cloud-config
+repo_update: true
+repo_upgrade: all
+packages:
+  - python-boto3
+  - python-requests
+  - python-pip
+output:
+  all: "| tee -a /var/log/cloud-init-output.log"
+groups:
+  - docker
+write_files:
+  - content: |
+      #!/bin/sh
+      docker image prune -f > /dev/null
+      docker container prune -f > /dev/null
+      docker node rm $(docker node ls --format "{{.ID}} {{.Status}} {{.Availability}}" | grep " Down" |  awk '{ print $1 }')
+    path: /etc/cron.hourly/docker-prune.sh
+    owner: root:root
+    permissions: "0700"
+  - content: |
+      #!/bin/sh
+      docker image prune --all -f > /dev/null
+      docker network prune -f > /dev/null
+      docker volume prune -f > /dev/null
+    path: /etc/cron.daily/docker-prune.sh
+    owner: root:root
+    permissions: "0700"
+  - content: |
+      #!/bin/sh
+      apt-get update -qq
+      apt-get upgrade -qq -y
+      apt-get autoremove -qq -y
+      apt-get cleanup -qq -y
+    path: /etc/cron.daily/system-update.sh
+    owner: root:root
+    permissions: "0700"
+  - content: |
+      #!/bin/sh
+      docker node update --availability drain $(docker info -f '{{.Swarm.NodeID}}')
+      sleep 10
+      docker node demote $(docker info -f '{{.Swarm.NodeID}}')
+      sleep 10
+      docker swarm leave
+    path: /usr/bin/leave-swarm
+    owner: root:root
+    permissions: "0700"
+  - content: |
+      #!/bin/sh
+      #docker node rm $(docker node ls --format "{{.ID}} {{.Status}} {{.Availability}}" | grep " Down Drain" |  awk '{ print $1 }')
+      docker node rm $(docker node ls --format "{{.ID}} {{.Status}} {{.Availability}}" | grep "Down" |  awk '{ print $1 }')
+    path: /usr/bin/prune-nodes
+    owner: root:root
+    permissions: "0700"
+  - content: |
+      #!/bin/sh
+      for node_name in $*
+      do
+        docker node update --availability drain ${node_name}
+      done
+      sleep 10
+      docker node rm --force $*
+    path: /usr/bin/rm-workers
+    owner: root:root
+    permissions: "0700"
