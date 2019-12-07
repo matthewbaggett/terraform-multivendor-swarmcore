@@ -6,7 +6,8 @@ resource "aws_instance" "swarm-workers" {
 
   vpc_security_group_ids = [
     aws_security_group.swarm.id,
-    aws_security_group.daemon.id
+    aws_security_group.daemon.id,
+    aws_security_group.sshaccess.id,
   ]
 
   iam_instance_profile = aws_iam_instance_profile.ec2.name

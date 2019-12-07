@@ -24,7 +24,6 @@ data "aws_ami" "base_ami" {
   "self"]
 }
 
-
 resource "aws_security_group" "swarm" {
   name        = "swarm"
   description = "Docker Swarm ports"
@@ -36,6 +35,8 @@ resource "aws_security_group" "swarm" {
     to_port     = 2377
     protocol    = "tcp"
     self        = true
+    cidr_blocks = [
+    "0.0.0.0/0"]
   }
 
   ingress {
@@ -44,6 +45,8 @@ resource "aws_security_group" "swarm" {
     to_port     = 7946
     protocol    = "tcp"
     self        = true
+    cidr_blocks = [
+    "0.0.0.0/0"]
   }
 
   ingress {
@@ -52,6 +55,8 @@ resource "aws_security_group" "swarm" {
     to_port     = 7946
     protocol    = "udp"
     self        = true
+    cidr_blocks = [
+    "0.0.0.0/0"]
   }
 
   ingress {
@@ -60,6 +65,8 @@ resource "aws_security_group" "swarm" {
     to_port     = 4789
     protocol    = "udp"
     self        = true
+    cidr_blocks = [
+    "0.0.0.0/0"]
   }
 
   tags = {
@@ -83,6 +90,33 @@ resource "aws_security_group" "daemon" {
     to_port   = 2376
     protocol  = "tcp"
     self      = true
+    cidr_blocks = [
+    "0.0.0.0/0"]
+  }
+
+  tags = {
+    Name    = "swarm-master"
+    Cluster = var.cluster_name
+  }
+
+  timeouts {
+    create = "2m"
+    delete = "2m"
+  }
+}
+
+resource "aws_security_group" "sshaccess" {
+  name        = "SSH Access"
+  description = "SSH port"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+    cidr_blocks = [
+    "0.0.0.0/0"]
+    self = true
   }
 
   tags = {

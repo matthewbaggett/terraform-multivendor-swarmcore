@@ -39,17 +39,17 @@ output "worker_ips_aws" {
 }
 
 output "all_manager_ips" {
-  value = concat(
-    linode_instance.swarm-manager.*.ip_address,
-    scaleway_instance_ip.swarm_manager_ip.*.address,
-    aws_eip.swarm-managers.*.public_ip
-  )
+  value = {
+    linode : linode_instance.swarm-manager.*.ip_address,
+    scaleway : scaleway_instance_ip.swarm_manager_ip.*.address,
+    aws : aws_eip.swarm-managers.*.public_ip
+  }
 }
 
 output "all_worker_ips" {
-  value = concat(
-    linode_instance.swarm-worker.*.ip_address,
-    scaleway_instance_ip.swarm_worker_ip.*.address,
-    aws_eip.swarm-workers.*.public_ip,
-  )
+  value = {
+    linode : linode_instance.swarm-worker.*.ip_address,
+    scaleway : scaleway_instance_ip.swarm_worker_ip.*.address,
+    aws : aws_eip.swarm-workers.*.public_ip,
+  }
 }
