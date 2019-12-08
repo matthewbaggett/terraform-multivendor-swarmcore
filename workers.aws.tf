@@ -1,8 +1,12 @@
 resource "aws_instance" "swarm-workers" {
-  count         = local.workers_aws
-  ami           = data.aws_ami.base_ami.id
-  instance_type = var.aws_manager_type
-  subnet_id     = aws_subnet.cluster[count.index % length(data.aws_availability_zones.azs.names)].id
+  count                = local.workers_aws
+  ami                  = data.aws_ami.base_ami.id
+  instance_type        = var.aws_manager_type
+  subnet_id            = aws_subnet.cluster[count.index % length(data.aws_availability_zones.azs.names)].id
+  key_name             = aws_key_pair.deployer.key_name
+  iam_instance_profile = aws_iam_instance_profile.ec2.name
+  user_data_base64     = data.template_cloudinit_config.workers[0].rendered
+  monitoring           = false
 
   vpc_security_group_ids = [
     aws_security_group.swarm.id,
@@ -10,16 +14,10 @@ resource "aws_instance" "swarm-workers" {
     aws_security_group.sshaccess.id,
   ]
 
-  iam_instance_profile = aws_iam_instance_profile.ec2.name
-  user_data_base64     = data.template_cloudinit_config.workers[0].rendered
-
   tags = {
     Name    = "swarm-worker"
     Cluster = var.cluster_name
   }
-
-  monitoring = false
-  #disable_api_termination = true
 
   root_block_device {
     volume_size = local.default_disk_size

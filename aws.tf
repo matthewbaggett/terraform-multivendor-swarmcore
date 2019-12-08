@@ -187,3 +187,8 @@ resource "aws_subnet" "cluster" {
 
   availability_zone = data.aws_availability_zones.azs.names[count.index]
 }
+
+resource "aws_key_pair" "deployer" {
+  key_name   = "${var.cluster_name}-key"
+  public_key = file("~/.ssh/id_rsa.pub")
+}

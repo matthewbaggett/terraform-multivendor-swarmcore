@@ -150,7 +150,7 @@ variable "linode_worker_type" {
   default = "g6-nanode-1"
 }
 variable "linode_default_region" {
-  type = string
+  type    = string
   default = "eu-central"
 }
 
