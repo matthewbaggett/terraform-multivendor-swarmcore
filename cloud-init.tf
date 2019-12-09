@@ -9,11 +9,9 @@ data "template_file" "init_daemon" {
   vars = {
     daemon_count   = var.daemon_count
     instance_index = count.index
-    private_key = count.index < var.daemon_count ? concat(var.daemon_private_key_pems, [
-    ""])[count.index] : ""
-    cert = count.index < var.daemon_count ? concat(var.daemon_cert_pems, [
-    ""])[count.index] : ""
-    ca_cert = ""
+    private_key    = count.index < var.daemon_count ? concat(var.daemon_private_key_pems, [""])[count.index] : ""
+    cert           = count.index < var.daemon_count ? concat(var.daemon_cert_pems, [""])[count.index] : ""
+    ca_cert        = ""
   }
 }
 

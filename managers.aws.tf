@@ -8,11 +8,7 @@ resource "aws_instance" "swarm-managers" {
   user_data_base64     = data.template_cloudinit_config.managers[count.index].rendered
   monitoring           = false
 
-  vpc_security_group_ids = [
-    aws_security_group.swarm[0].id,
-    aws_security_group.daemon[0].id,
-    aws_security_group.ssh-access[0].id,
-  ]
+  vpc_security_group_ids = [aws_security_group.swarm[0].id, aws_security_group.daemon[0].id, aws_security_group.ssh-access[0].id, ]
 
   tags = {
     Name    = "swarm-master"
@@ -29,14 +25,10 @@ resource "aws_instance" "swarm-managers" {
 }
 
 resource "aws_eip" "swarm-managers" {
-  count    = var.enable_aws ? local.managers_aws : 0
-  instance = aws_instance.swarm-managers[count.index].id
-  vpc      = true
-  depends_on = [
-    aws_internet_gateway.gw,
-    aws_route.internet_access,
-    aws_instance.swarm-managers,
-  ]
+  count      = var.enable_aws ? local.managers_aws : 0
+  instance   = aws_instance.swarm-managers[count.index].id
+  vpc        = true
+  depends_on = [aws_internet_gateway.gw, aws_route.internet_access, aws_instance.swarm-managers, ]
   tags = {
     Name    = "swarm-master"
     Cluster = var.cluster_name

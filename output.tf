@@ -66,6 +66,6 @@ output "merged_worker_ips" {
   value = concat(
     linode_instance.swarm-worker.*.ip_address,
     scaleway_instance_ip.swarm_worker_ip.*.address,
-    aws_eip.swarm-workers.*.public_ip,
+    aws_eip.swarm-workers.*.public_ip
   )
 }

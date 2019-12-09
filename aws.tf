@@ -21,9 +21,7 @@ data "aws_ami" "base_ami" {
   count       = var.enable_aws ? 1 : 0
   most_recent = true
   name_regex  = var.base_ami
-  owners = [
-    "amazon",
-  "self"]
+  owners      = ["amazon", "self"]
 }
 
 resource "aws_security_group" "swarm" {
@@ -38,8 +36,7 @@ resource "aws_security_group" "swarm" {
     to_port     = 2377
     protocol    = "tcp"
     self        = true
-    cidr_blocks = [
-    "0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -48,8 +45,7 @@ resource "aws_security_group" "swarm" {
     to_port     = 7946
     protocol    = "tcp"
     self        = true
-    cidr_blocks = [
-    "0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -58,8 +54,7 @@ resource "aws_security_group" "swarm" {
     to_port     = 7946
     protocol    = "udp"
     self        = true
-    cidr_blocks = [
-    "0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -68,8 +63,7 @@ resource "aws_security_group" "swarm" {
     to_port     = 4789
     protocol    = "udp"
     self        = true
-    cidr_blocks = [
-    "0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -90,12 +84,11 @@ resource "aws_security_group" "daemon" {
   vpc_id      = aws_vpc.main[0].id
 
   ingress {
-    from_port = 2376
-    to_port   = 2376
-    protocol  = "tcp"
-    self      = true
-    cidr_blocks = [
-    "0.0.0.0/0"]
+    from_port   = 2376
+    to_port     = 2376
+    protocol    = "tcp"
+    self        = true
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -116,12 +109,11 @@ resource "aws_security_group" "ssh-access" {
   vpc_id      = aws_vpc.main[0].id
 
   ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-    cidr_blocks = [
-    "0.0.0.0/0"]
-    self = true
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    self        = true
   }
 
   tags = {
@@ -150,13 +142,11 @@ resource "aws_iam_instance_profile" "ec2" {
 
 data "aws_iam_policy_document" "instance-assume-role-policy" {
   statement {
-    actions = [
-    "sts:AssumeRole"]
+    actions = ["sts:AssumeRole"]
 
     principals {
-      type = "Service"
-      identifiers = [
-      "ec2.amazonaws.com"]
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
     }
   }
 }
@@ -182,9 +172,7 @@ resource "aws_route" "internet_access" {
 }
 
 resource "aws_subnet" "cluster" {
-  depends_on = [
-    data.aws_availability_zones.azs[0]
-  ]
+  depends_on              = [data.aws_availability_zones.azs[0]]
   count                   = var.enable_aws ? length(data.aws_availability_zones.azs[0].names) : 0
   vpc_id                  = aws_vpc.main[0].id
   cidr_block              = cidrsubnet(aws_vpc.main[0].cidr_block, 8, 200 + count.index, )

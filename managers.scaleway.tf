@@ -45,10 +45,7 @@ resource "scaleway_instance_server" "swarm-manager" {
   image = data.scaleway_image.ubuntu[0].id
   name  = "swarm-manager-scaleway-${count.index}"
 
-  tags = [
-    var.cluster_name,
-    "swarm",
-  "manager"]
+  tags = [var.cluster_name, "swarm", "manager"]
 
   security_group_id = scaleway_instance_security_group.swarm-managers[0].id
 
