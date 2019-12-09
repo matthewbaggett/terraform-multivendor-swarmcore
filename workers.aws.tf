@@ -1,17 +1,17 @@
 resource "aws_instance" "swarm-workers" {
-  count                = local.workers_aws
-  ami                  = data.aws_ami.base_ami.id
+  count                = var.enable_aws ? local.workers_aws : 0
+  ami                  = data.aws_ami.base_ami[0].id
   instance_type        = var.aws_manager_type
-  subnet_id            = aws_subnet.cluster[count.index % length(data.aws_availability_zones.azs.names)].id
-  key_name             = aws_key_pair.deployer.key_name
-  iam_instance_profile = aws_iam_instance_profile.ec2.name
+  subnet_id            = aws_subnet.cluster[count.index % length(data.aws_availability_zones.azs[0].names)].id
+  key_name             = aws_key_pair.deployer[0].key_name
+  iam_instance_profile = aws_iam_instance_profile.ec2[0].name
   user_data_base64     = data.template_cloudinit_config.workers[0].rendered
   monitoring           = false
 
   vpc_security_group_ids = [
-    aws_security_group.swarm.id,
-    aws_security_group.daemon.id,
-    aws_security_group.sshaccess.id,
+    aws_security_group.swarm[0].id,
+    aws_security_group.daemon[0].id,
+    aws_security_group.ssh-access[0].id,
   ]
 
   tags = {
@@ -29,7 +29,7 @@ resource "aws_instance" "swarm-workers" {
 }
 
 resource "aws_eip" "swarm-workers" {
-  count    = local.workers_aws
+  count    = var.enable_aws ? local.workers_aws : 0
   instance = aws_instance.swarm-workers[0].id
   vpc      = true
   depends_on = [
