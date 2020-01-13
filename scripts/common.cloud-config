@@ -2,11 +2,24 @@
 repo_update: true
 repo_upgrade: all
 packages:
-  - python-boto3
-  - python-requests
-  - python-pip
+  - docker.io
+  - python3-boto3
+  - python3-requests
+  - python3-pip
 output:
   all: "| tee -a /var/log/cloud-init-output.log"
+users:
+- name: deployer
+  shell: /bin/bash
+  ssh-authorized-keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC55wHOhj2YK96PDXzXxS+ccyDgruVyl0jXFpBJyU4fqXKBWHBDef87ImlArDFBFDpWZw4MHzehBn2cpmzEkOzjGwrTB+7iiBn1uWRkBQvwJ+KJnlxzDk2+4/alrGRPWjPTX/U9P+MDjHbEKGPiwhJ5fo9zqPzkqrx+S72w6MY5xrLqJnOkJGHFlP6QDI080CxtbBi0ARVlhlgz1sLiouTUpOV6FbA/we4McBas8HGgm7Q0/1LpSJ8iIjhJ6FE1mZuAqDK3a2u+hLbA4FcW05ua7hvE7XlWdP5862sWpQDTl9pRrlpj8Xo+bVv1dnlgz9U8oADxI6sgKzpxBdr4LbWV
+  sudo: ['ALL=(ALL) NOPASSWD: /usr/bin/docker']
+- name: admin
+  shell: /bin/bash
+  ssh-authorized-keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDmETGaY8S7I6I+6Rm0rVtWwlpmOQ+ZnywQpAKyj5gnK2a/9bwSJzMt/DI+/WBodSHLfXef8P0CHfPpMKqTAN1c4kDNqNgsvAMC6lSXofqnSu4mEhEWRSsJwA8NXanQ9ph970aaQKdj+GlS9lsoMel/cOdjyPrP3RtFTd0BuAlCah5KB8Job699riVnvh6y+SyqwWtNRAesAfQqrBzLs3LTWtltqG4UZ0mkuLpVu7RbJOh1hAPqhd1NKHMjPpBXUjABMVya0qFFbq2j9W016P0dMkZO/jZqLdd6MeF25q9lNeJXU6/w5d3qSljpq9u+AbhIoUgTZerLcN2hqVWZlpDn geusebio@roosevelt
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0Tf328dXuoD40y+YWHBZqKoZoUcuGrR76wu1q1YZwGQmTAgmvlGa7zDa/6GTAeemenDyQ/74cdd4zmYN1hpf1FNt8CORqvH4F4vHzVm6hdY3pnpRGTcZGjKl3uM3PGMQFKno2lJi62lTPqoYlvO9RY6LuczRNG2hQyYM3rMTA+JA1qkMz3WkiLTnD5jVWdQmKQgyFUHAkgmaM7Z75aWN+eUW/XC+zIAINIfHG7LIwntxCANZdJYi4NGkCviUFSKLxBlXJFx6hh1sL3zih57RksOmlNGDRaHj8KuHTOlMRor6l+HtVNXLiq4tkcOo7ND8VV2EgdEU/CZNUFAnCXi4R geusebio@Monolith
+  sudo: ['ALL=(ALL) NOPASSWD:ALL']
 groups:
   - docker
 write_files:
@@ -63,3 +76,47 @@ write_files:
     path: /usr/bin/rm-workers
     owner: root:root
     permissions: "0700"
+ssh_keys:
+  rsa_private: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEAwL3m5rpmrhQHu1K3Ppe7hUKF9xxcf3Gs4P/Hl8xhthYZCBCm
+    cq67ZEckTe3Kr6kfHafm++NQOY5nBBwmIb5u+kzgnvis3jRLu0FlJxTZATNdcov5
+    yajPE662wiMaGz0UcCot+d1kKQjU+jDiMyBs93bPeqZSBrYI//Ow/jfDEqRLEYni
+    uf145kKatu1myer99h9BIKZGoOMrFoPtvxMcPsWiHm5QE7kW16VNYdxrZUW6Alha
+    hya+NlVyrDZ+BjmIuN6Oo4CYtD93V1cQl2bKMKHb5VnWSpO9U1QXq5Y8sNc7kNcn
+    uUH1+fed+Qxna6jtxoUIoDJqwl1bdwPcIa6VXwIDAQABAoIBAFxnrxfXLfsvZzWL
+    xoafwCt3ZTq/wijnmvaUKmDAf+gIWB/hu6sn0neVE/a4ln/5GQ3ivX7t0DyH5SO3
+    SyDKZ/JggSA2IMq3T8eK5rAB8rf8pESSj0L7R6wsCzqwEYgVlILh9gDg/3Ac5967
+    KPdSCGvr7jTjIFhPValAcA6xNTjt7oFtgRO8mMWxNQKD8R+dG0+dBGMqsRO6vxAH
+    cyQy9heGgWR61IqsEZxTx9M4cZkotu9Vy4xbWg9YSaoqe9Mrt4ZIDsT+nr8tHMXY
+    WqMFDazJOqPvJ+717D3kqfaF8OuZuONijw8m3P6T/L5E/nwZCQxFeJMd7lWRh4MH
+    vRi+/0ECgYEA3nehqmNLMT4iLaGa5+llnRnEVP3ZMHuQw4etLXRy24xEkvWEqS80
+    I1RLwJ/3SCPQMP18EyNDgOUsiJ42VnL/WOYvWdTDGFM+5Z8mzp/lJRm3cOx7MEjl
+    RnKn8UYxuhj8zPMA7XgjRXE5nucpmYRCH3Nfzdsd0LlLe0dBJJU5WAkCgYEA3cs/
+    1gj0NO5X8Eu1WJ6BtFHXjJxv6F5jwKvCSnqdbmbbMpgcQci26RSxacNcBZ4g1Mq+
+    yxqyqOCB2JlCbYir8GKbvbZqj2vSz/GSUbaWmFThKrGcnurJpsmXQrEA+46seafh
+    F8rEcdm42kGur4U+BpDRsVR94/SJ7lvlAFozzCcCgYBLvf1bzqymGlp2oMPl25AO
+    Gdy/dyIAIMHb4JC0niYQ28PpKRA+reSZdrTH427Er/TNCTC6L1JnSx+LcBpd+o83
+    jD9o3UiDOqx6b2I+DTBuHkBXgRw8B0WQY68MNXLuwl0nxkB1mWag2PjeQiPmsaH1
+    pUlkBAs1qjCpy0vBkdDRSQKBgQDEkjLNm7n0f5lo23CqTjFeg3qqoKt+Isn+JTxZ
+    jjqhcn+rY60HkMCr6y8iMYcJY5BtiBN5JvxZOEFcmtiJA6x/rKWjilz/J+z7Z3rq
+    +QyXjgLSOAA7yJNYQyrQbNgWG+k5GVUiJQ/eZ7yxk60i2tCSOR/gLqY0trLYkpFv
+    soJd2QKBgQCGuR+v2DrHyu1051ED1hRC4NM8nGWeWest17ilr7h3cy97zHvKuBmd
+    rvJuqYqGKVZTOhq8Mc76vnYjej9CkloibYyWFWYuZntG1ovNVJv/fRgKnJs4wpGC
+    0e8rCWezkLiS3Us7plKX5szMFSzt21n/6SkanJXYq4pfQDg8tMwwrQ==
+    -----END RSA PRIVATE KEY-----
+  rsa_public: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAvebmumauFAe7Urc+l7uFQoX3HFx/cazg/8eXzGG2FhkIEKZyrrtkRyRN7cqvqR8dp+b741A5jmcEHCYhvm76TOCe+KzeNEu7QWUnFNkBM11yi/nJqM8TrrbCIxobPRRwKi353WQpCNT6MOIzIGz3ds96plIGtgj/87D+N8MSpEsRieK5/XjmQpq27WbJ6v32H0Egpkag4ysWg+2/Exw+xaIeblATuRbXpU1h3GtlRboCWFqHJr42VXKsNn4GOYi43o6jgJi0P3dXVxCXZsowodvlWdZKk71TVBerljyw1zuQ1ye5QfX59535DGdrqO3GhQigMmrCXVt3A9whrpVf
+  dsa_private: |
+    -----BEGIN DSA PRIVATE KEY-----
+    MIIBvAIBAAKBgQCoVoKlfpPn7QMjCskw46VXehMG2l8dJYdOKKWAGDoIzRQ7Hm6d
+    J1yOawk4QhPiNPbnSVv8lFFavI1iP96WmRX/Qwfo++ojIX/Fvd6HrxaEeoaJeYqu
+    SGpwVGBjizOG/IxgZyAFzxedP3/kK7buzV9o808IpYnhSjplhs1M6Vc46QIVAM2o
+    VPi325tH3w9VRognlAIZQD43AoGBAIKWRVXuqkbj5EtLQpP4T0/gyy+dZ8S1ocaK
+    HBHfS3aUS/VKKxBAKaw+tD4o8dGWoAMYoh2GWYaKbWHse0nknk9bkthQtNwabscU
+    8QIr0zmRbVDeSMIlzva2tjINzaOc1S9kDlVTcSF/n8as/dpiyd0xY1Sbe89yblUA
+    8eRjtm3FAoGACV9ZABgB/nX++UrL908ZUoBNLvQ43nbtiJk5EguQYt7fDlaxn7YY
+    jUnin0vDS3iODgo512FKuUYsWfhSDwCe8EY56pyQ4bZDGDy7oIgJY88AVxt1NGnE
+    ruk53z++F2LzDK2Ulkezb3gCwGCKLS6J49JhXH1M+zKmdt8s0W78+RUCFQDIHZ8Z
+    biiHpAMB328W7602ZKquag==
+    -----END DSA PRIVATE KEY-----
+  dsa_public: ssh-dss AAAAB3NzaC1kc3MAAACBAKhWgqV+k+ftAyMKyTDjpVd6EwbaXx0lh04opYAYOgjNFDsebp0nXI5rCThCE+I09udJW/yUUVq8jWI/3paZFf9DB+j76iMhf8W93oevFoR6hol5iq5IanBUYGOLM4b8jGBnIAXPF50/f+Qrtu7NX2jzTwilieFKOmWGzUzpVzjpAAAAFQDNqFT4t9ubR98PVUaIJ5QCGUA+NwAAAIEAgpZFVe6qRuPkS0tCk/hPT+DLL51nxLWhxoocEd9LdpRL9UorEEAprD60Pijx0ZagAxiiHYZZhoptYex7SeSeT1uS2FC03BpuxxTxAivTOZFtUN5IwiXO9ra2Mg3No5zVL2QOVVNxIX+fxqz92mLJ3TFjVJt7z3JuVQDx5GO2bcUAAACACV9ZABgB/nX++UrL908ZUoBNLvQ43nbtiJk5EguQYt7fDlaxn7YYjUnin0vDS3iODgo512FKuUYsWfhSDwCe8EY56pyQ4bZDGDy7oIgJY88AVxt1NGnEruk53z++F2LzDK2Ulkezb3gCwGCKLS6J49JhXH1M+zKmdt8s0W78+RU=

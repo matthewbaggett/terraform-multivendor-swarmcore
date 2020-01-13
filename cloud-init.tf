@@ -33,17 +33,11 @@ data "template_file" "init_manager" {
 
 data "template_cloudinit_config" "managers" {
   count         = local.managers_total
-  gzip          = "true"
-  base64_encode = "true"
+  gzip          = false
+  base64_encode = false
 
   part {
     content = file("${path.module}/scripts/common.cloud-config")
-  }
-
-  part {
-    filename     = "extra.cloud-config"
-    content      = file("${path.module}/scripts/users.cloud-config")
-    content_type = "text/cloud-config"
   }
 
   part {
@@ -83,17 +77,11 @@ data "template_file" "init_worker" {
 
 data "template_cloudinit_config" "workers" {
   count         = local.workers_total > 0 ? 1 : 0
-  gzip          = "true"
-  base64_encode = "true"
+  gzip          = false
+  base64_encode = false
 
   part {
     content = file("${path.module}/scripts/common.cloud-config")
-  }
-
-  part {
-    filename     = "extra.cloud-config"
-    content      = file("${path.module}/scripts/users.cloud-config")
-    content_type = "text/cloud-config"
   }
 
   part {

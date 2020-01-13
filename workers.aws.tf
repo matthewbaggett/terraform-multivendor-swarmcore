@@ -5,8 +5,9 @@ resource "aws_instance" "swarm-workers" {
   subnet_id            = aws_subnet.cluster[count.index % length(data.aws_availability_zones.azs[0].names)].id
   key_name             = aws_key_pair.deployer[0].key_name
   iam_instance_profile = aws_iam_instance_profile.ec2[0].name
-  user_data_base64     = data.template_cloudinit_config.workers[0].rendered
-  monitoring           = false
+  user_data            = data.template_cloudinit_config.workers[0].rendered
+
+  monitoring = false
 
   vpc_security_group_ids = [
     aws_security_group.swarm[0].id,

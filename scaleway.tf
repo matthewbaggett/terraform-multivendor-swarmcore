@@ -12,3 +12,14 @@ data "scaleway_image" "ubuntu" {
   architecture = "x86_64"
   name         = "Ubuntu Bionic"
 }
+
+resource "scaleway_account_ssh_key" "default" {
+  name       = file("/etc/hostname")
+  public_key = file("~/.ssh/id_rsa.pub")
+}
+
+resource "scaleway_instance_placement_group" "swarm" {
+  name        = "swarm"
+  policy_type = "low_latency"
+  policy_mode = "enforced"
+}

@@ -1,41 +1,55 @@
-resource "scaleway_instance_security_group" "swarm-managers" {
+resource "scaleway_instance_security_group" "swarm-nodes" {
   count                   = local.managers_scaleway > 0 ? 1 : 0
   inbound_default_policy  = "drop"
   outbound_default_policy = "accept"
+  name                    = "swarm-nodes"
 
   inbound_rule {
-    action = "accept"
-    port   = 2376
+    action   = "accept"
+    protocol = "TCP"
+    port     = 2377
   }
 
   inbound_rule {
-    action = "accept"
-    port   = 2377
+    action   = "accept"
+    protocol = "ANY"
+    port     = 7946
   }
 
   inbound_rule {
-    action = "accept"
-    port   = 7946
+    action   = "accept"
+    protocol = "UDP"
+    port     = 4789
   }
 
   inbound_rule {
-    action = "accept"
-    port   = 4789
+    action   = "accept"
+    protocol = "TCP"
+    port     = 22
   }
 
   inbound_rule {
-    action = "accept"
-    port   = "22"
+    action   = "accept"
+    protocol = "TCP"
+    port     = 80
   }
 
   inbound_rule {
-    action = "accept"
-    port   = "80"
+    action   = "accept"
+    protocol = "TCP"
+    port     = 443
   }
 
   inbound_rule {
-    action = "accept"
-    port   = "443"
+    action   = "accept"
+    protocol = "TCP"
+    port     = 27015
+  }
+
+  inbound_rule {
+    action   = "accept"
+    protocol = "UDP"
+    port     = "34197"
   }
 }
 
@@ -47,7 +61,7 @@ resource "scaleway_instance_server" "swarm-manager" {
 
   tags = [var.cluster_name, "swarm", "manager"]
 
-  security_group_id = scaleway_instance_security_group.swarm-managers[0].id
+  security_group_id = scaleway_instance_security_group.swarm-nodes[0].id
 
   root_volume {
     # Disk size must be 20GB in scaleway
@@ -56,9 +70,12 @@ resource "scaleway_instance_server" "swarm-manager" {
   }
 
   cloud_init = data.template_cloudinit_config.managers[count.index].rendered
+
+  ip_id = scaleway_instance_ip.swarm_manager_ip[count.index].id
+
+  placement_group_id = scaleway_instance_placement_group.swarm.id
 }
 
 resource "scaleway_instance_ip" "swarm_manager_ip" {
-  count     = local.managers_scaleway
-  server_id = scaleway_instance_server.swarm-manager[count.index].id
+  count = local.managers_scaleway
 }

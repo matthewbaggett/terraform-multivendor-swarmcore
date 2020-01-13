@@ -29,6 +29,6 @@ resource "linode_instance" "swarm-manager" {
   swap_size      = 1024
   stackscript_id = linode_stackscript.cloud-init[0].id
   stackscript_data = {
-    userdata = data.template_cloudinit_config.managers[count.index].rendered
+    userdata = base64gzip(data.template_cloudinit_config.managers[count.index].rendered)
   }
 }

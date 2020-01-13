@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import boto3
 from botocore.exceptions import NoCredentialsError
 import os
@@ -83,17 +83,17 @@ myip = subprocess.check_output(
 myip_object = s3.Object(s3_bucket, 'ip%d' % instance_index)
 myip_object.put(Body=bytes(myip))
 
-f = open("/swapfile", "wb")
-for i in xrange(swapsize * 1024):
-    f.write("\0" * 1024 * 1024)
-f.close()
-os.chmod("/swapfile", 0o600)
-subprocess.check_output(["mkswap", "/swapfile"])
-f = open("/etc/fstab", "a")
-f.write("/swapfile none swap defaults 0 0\n")
-f.close()
+# Configure Swapfile
+if not os.path.isfile("/swapfile"):
+    subprocess.check_output(["fallocate", "-l", str(swapsize) + "G", "/swapfile"])
+    os.chmod("/swapfile", 0o600)
+    subprocess.check_output(["mkswap", "/swapfile"])
+    f = open("/etc/fstab", "a")
+    f.write("/swapfile none swap defaults 0 0\n")
+    f.close()
 subprocess.check_output(["swapon", "-a"])
 
+# Configure daemon label:
 daemonSettings = {
     "labels": [
         "node-purpose=manager"
@@ -102,7 +102,9 @@ daemonSettings = {
 daemon = open("/etc/docker/daemon.json", "w")
 daemon.write(json.dumps(daemonSettings, sort_keys=True, indent=4))
 daemon.close()
-subprocess.check_call(["systemctl", "restart", "docker.service"])
 
 # Set the host name
 subprocess.check_call(["hostnamectl", "set-hostname", "manager%d-%s" % (instance_index, environment)])
+
+# Restart Docker
+subprocess.check_call(["systemctl", "restart", "docker.service"])
