@@ -4,52 +4,22 @@ resource "scaleway_instance_security_group" "swarm-nodes" {
   outbound_default_policy = "accept"
   name                    = "swarm-nodes"
 
-  inbound_rule {
-    action   = "accept"
-    protocol = "TCP"
-    port     = 2377
+  dynamic "inbound_rule" {
+    for_each = local.tcp_ports
+    content {
+      action   = "accept"
+      protocol = "TCP"
+      port     = inbound_rule.value
+    }
   }
 
-  inbound_rule {
-    action   = "accept"
-    protocol = "ANY"
-    port     = 7946
-  }
-
-  inbound_rule {
-    action   = "accept"
-    protocol = "UDP"
-    port     = 4789
-  }
-
-  inbound_rule {
-    action   = "accept"
-    protocol = "TCP"
-    port     = 22
-  }
-
-  inbound_rule {
-    action   = "accept"
-    protocol = "TCP"
-    port     = 80
-  }
-
-  inbound_rule {
-    action   = "accept"
-    protocol = "TCP"
-    port     = 443
-  }
-
-  inbound_rule {
-    action   = "accept"
-    protocol = "TCP"
-    port     = 27015
-  }
-
-  inbound_rule {
-    action   = "accept"
-    protocol = "UDP"
-    port     = "34197"
+  dynamic "inbound_rule" {
+    for_each = local.udp_ports
+    content {
+      action   = "accept"
+      protocol = "UDP"
+      port     = inbound_rule.value
+    }
   }
 }
 
